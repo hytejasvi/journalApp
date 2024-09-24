@@ -1,6 +1,9 @@
 package com.hytejasvi.journalApp.controller;
 
 import com.hytejasvi.journalApp.Entity.JournalEntry;
+import com.hytejasvi.journalApp.service.JournalEntryService;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -10,37 +13,41 @@ import java.util.*;
 //this means all the endpoints in this class will start with /journal followed by their individual param
 public class JournalEntryController {
 
-    private Map<Long, JournalEntry> journalEntries = new HashMap<>();
+    @Autowired
+    JournalEntryService journalEntryService;
 
     //this will be resolved to url:port/journal/getAll
     @GetMapping("/getAll")
     public List<JournalEntry> getAll() {
-        return new ArrayList<>(journalEntries.values());
+        return journalEntryService.getAllEntries();
     }
 
     @PostMapping()
-    public void creatEntry(@RequestBody JournalEntry myEntry) {
-        journalEntries.put(myEntry.getId(), myEntry);
+    public JournalEntry creatEntry(@RequestBody JournalEntry myEntry) {
+        journalEntryService.saveEntry(myEntry);
+        return myEntry;
     }
 
     @GetMapping("/id/{journalId}")
-    public JournalEntry getEntry(@PathVariable long journalId) {
-        return journalEntries.get(journalId);
+    public Optional<JournalEntry> getEntry(@PathVariable ObjectId journalId) {
+        return journalEntryService.getJournalById(journalId);
     }
 
     @GetMapping("/id")
-    public JournalEntry getEntry2(@RequestParam long journalId) {
-        return journalEntries.get(journalId);
+    public Optional<JournalEntry> getEntry2(@RequestParam ObjectId journalId) {
+        return journalEntryService.getJournalById(journalId);
     }
 
     @DeleteMapping("/id/{journalId}")
-    public JournalEntry deleteEntry(@PathVariable long journalId) {
-        return journalEntries.remove(journalId);
+    public boolean deleteEntry(@PathVariable ObjectId journalId) {
+        journalEntryService.deleteJournalEntry(journalId);
+        return true;
     }
 
     @PutMapping("/id/{journalId}")
-    public JournalEntry updateEntry(@PathVariable long journalId, @RequestBody JournalEntry updateEntry) {
-        return journalEntries.put(journalId, updateEntry);
+    public JournalEntry updateEntry(@PathVariable ObjectId journalId, @RequestBody JournalEntry updateEntry)
+            throws Exception {
+        return journalEntryService.updateJournalForId(journalId, updateEntry);
     }
 }
 
@@ -48,6 +55,8 @@ public class JournalEntryController {
 
 /*
 Notes:
+usual flow of data is as follows:
+Ui --> Controller --> Service --> repository
 @RequestBody --> tells the application that the request has some input data in the request body
 @PathVariable --> Using this, we can send the input directly in teh url
     ex: get http://localhost:8090/journal/id/1 --> here, the last 1 is the pathVariable.

@@ -1,16 +1,37 @@
 package com.hytejasvi.journalApp.Entity;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+
+
+@Document(collection = "journal_Entries")//explicitly telling the application to look for the particular collection
+// (in mongodb collection is similar to what we have as table in sql) and if not existing, then create it
 public class JournalEntry {
 
-    private long id;
+    @Id // this marks the variable as primary key
+    private ObjectId id;
+
     private String title;
     private String content;
+    private LocalDateTime localDateTime;
 
-    public long getId() {
+
+    public LocalDateTime getDate() {
+        return localDateTime;
+    }
+
+    public void setDate() {
+        this.localDateTime = LocalDateTime.now();
+    }
+
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
