@@ -1,11 +1,12 @@
 package com.hytejasvi.journalApp.controller;
 
 import com.hytejasvi.journalApp.Entity.JournalEntry;
+import com.hytejasvi.journalApp.Entity.User;
 import com.hytejasvi.journalApp.service.JournalEntryService;
+import com.hytejasvi.journalApp.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +20,14 @@ public class JournalEntryController {
     @Autowired
     JournalEntryService journalEntryService;
 
-    //this will be resolved to url:port/journal/getAll
-    @GetMapping("/getAll")
-    public ResponseEntity<?> getAll() {
-        List<JournalEntry> allEntries = journalEntryService.getAllEntries();
+    @Autowired
+    UserService userService;
+
+    //this will be resolved to url:port/journal/userName}
+    @GetMapping("/{userName}")
+    public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable String userName) {
+        User user = userService.findByUserName(userName);
+        List<JournalEntry> allEntries = user.getJournalEntries();
         if (allEntries != null && !allEntries.isEmpty()) {
             return new ResponseEntity<>(allEntries, HttpStatus.OK);
         } else {
@@ -30,10 +35,11 @@ public class JournalEntryController {
         }
     }
 
-    @PostMapping()
-    public ResponseEntity<JournalEntry> creatEntry(@RequestBody JournalEntry myEntry) {
+    @PostMapping("/{userName}")
+    public ResponseEntity<JournalEntry> creatEntry(@RequestBody JournalEntry myEntry, @PathVariable String userName) {
         try {
-            journalEntryService.saveEntry(myEntry);
+            journalEntryService.saveEntry(myEntry, userName);
+
             return new ResponseEntity<JournalEntry>(myEntry, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<JournalEntry>(HttpStatus.BAD_REQUEST);
@@ -59,9 +65,9 @@ public class JournalEntryController {
         }
     }
 
-    @DeleteMapping("/id/{journalId}")
-    public ResponseEntity<JournalEntry> deleteEntry(@PathVariable ObjectId journalId) {
-        journalEntryService.deleteJournalEntry(journalId);
+    @DeleteMapping("/id/{userName}/{journalId}")
+    public ResponseEntity<JournalEntry> deleteEntry(@PathVariable String userName, @PathVariable ObjectId journalId) {
+        journalEntryService.deleteJournalEntry(userName, journalId);
         return new ResponseEntity<JournalEntry>(HttpStatus.OK);
     }
 

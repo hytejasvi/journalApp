@@ -1,6 +1,7 @@
 package com.hytejasvi.journalApp.service;
 
 import com.hytejasvi.journalApp.Entity.JournalEntry;
+import com.hytejasvi.journalApp.Entity.User;
 import com.hytejasvi.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,15 @@ public class JournalEntryService {
     //using below reference variable will lead to NPE
     private JournalEntryRepository journalEntryRepository;
 
-    public void saveEntry(JournalEntry journalEntry) {
+    @Autowired
+    private UserService userService;
+
+    public void saveEntry(JournalEntry journalEntry, String userName) {
+        User user = userService.findByUserName(userName);
         journalEntry.setLocalDateTime(LocalDateTime.now());
-        journalEntryRepository.save(journalEntry);
+        JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
+        user.getJournalEntries().add(savedEntry);
+        userService.saveUser(user);
     }
 
     public List<JournalEntry> getAllEntries() {
@@ -32,7 +39,19 @@ public class JournalEntryService {
     }
 
     //Method to delete a particular Entry by Id
-    public void deleteJournalEntry(ObjectId journalId) {
+    public void deleteJournalEntry(String userName, ObjectId journalId) {
+        User user = userService.findByUserName(userName);
+        /*List<JournalEntry> journalEntries = user.getJournalEntries();
+        for (int i = 0; i < journalEntries.size(); i++) {
+            if (journalEntries.get(i).getId().equals(journalId)) {
+                journalEntries.remove(i); // Remove entry if the ID matches
+                break; // Exit the loop once the entry is found and removed
+            }
+        }*/
+        //lambda is a short form for above loop that checks if the journalId of the current
+        // JournalEntry (represented by x) is equal to the journalId passed to the method.
+        user.getJournalEntries().removeIf(x -> x.getId().equals(journalId));
+        userService.saveUser(user);
         journalEntryRepository.deleteById(journalId);
     }
 
