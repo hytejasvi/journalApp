@@ -1,0 +1,26 @@
+Using this file to update all teh response codes that i learn .
+
+These codes are used to tell the result of status of the requested operation
+
+Response codes starting from
+1..--> Informational
+
+2..--> Successful
+    200 : Request processed successfully, and server returning the asked resource (if asked)
+    201 : Request is successful and a new resource is created
+    204 : Request is successful but there is no response body (ex: for delete operation)
+
+3..--> Redirection
+    301 : Moved permanently
+    302 : Found
+    304 : not Modified
+
+4..--> Error on the client side
+    400 : Bad Request --> Server cannot understand the request
+    401 : Unauthorized --> Client needs to provide authorization
+    403 : Forbidden --> the client is authorized, but dosen't have enough permission for this operation
+
+5.. --> Error on the server part
+    500 : Internal Server error --> Generic msg to tell that server could not handle the request
+    502 : Bad Gateway -->
+    503 : Service Unavailable --> The server cannot handle the request due to temporary overloading or maintenance
