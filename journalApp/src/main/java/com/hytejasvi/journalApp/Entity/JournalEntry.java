@@ -1,5 +1,8 @@
 package com.hytejasvi.journalApp.Entity;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +12,9 @@ import java.time.LocalDateTime;
 
 @Document(collection = "journal_Entries")//explicitly telling the application to look for the particular collection
 // (in mongodb collection is similar to what we have as table in sql) and if not existing, then create it
+//@Getter
+//@Setter
+@Data //--> this is equal to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode.
 public class JournalEntry {
 
     @Id // this marks the variable as primary key
@@ -19,12 +25,12 @@ public class JournalEntry {
     private LocalDateTime localDateTime;
 
 
-    public LocalDateTime getDate() {
+    /*public LocalDateTime getLocalDateTime() {
         return localDateTime;
     }
 
-    public void setDate() {
-        this.localDateTime = LocalDateTime.now();
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
     }
 
     public ObjectId getId() {
@@ -49,5 +55,5 @@ public class JournalEntry {
 
     public void setContent(String content) {
         this.content = content;
-    }
+    }*/
 }
