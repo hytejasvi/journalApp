@@ -32,6 +32,7 @@ public class SpringSecurity {
                 ).csrf(csrf -> csrf.disable()) // Updated way to disable CSRF
                 .authorizeHttpRequests(auth -> auth  // Replacing authorizeRequests
                         .requestMatchers("/journal/**","/user/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") //role based authorization
                         .anyRequest().permitAll())
                 .httpBasic(withDefaults());//tells spring application that basic auth will be used for authorization
         return http.build();  // Build the SecurityFilterChain
