@@ -1,45 +1,43 @@
 package com.hytejasvi.journalApp.controller;
 
-import com.hytejasvi.journalApp.Entity.User;
+import com.hytejasvi.journalApp.Dto.UserDto;
 import com.hytejasvi.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
 
-import java.util.List;
-
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
+    @PutMapping()
+    public ResponseEntity<String> updateUser(@RequestBody UserDto userDto) {
         try {
-            userService.createUser(user);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("UserName Already Exists", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PutMapping("/{currentUserName}")
-    public ResponseEntity<String> updateUser(@RequestBody User user, @PathVariable String currentUserName) {
-        try {
-            userService.updateUser(currentUserName, user);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userName = authentication.getName();
+            System.out.println(authentication.getName());  // Prints the username
+            System.out.println(authentication.getAuthorities());  // Prints the roles or authorities
+            userService.updateUser(userName, userDto);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<String> deleteUserByUserName() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            userService.deleteUserByUsername(authentication.getName());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }

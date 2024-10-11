@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,14 +25,11 @@ public class JournalEntryService {
 
     public void saveEntry(JournalEntry journalEntry, String userName) {
         User user = userService.findByUserName(userName);
+        System.out.println("found user: "+userName);
         journalEntry.setLocalDateTime(LocalDateTime.now());
         JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
         user.getJournalEntries().add(savedEntry);
         userService.saveUser(user);
-    }
-
-    public List<JournalEntry> getAllEntries() {
-        return journalEntryRepository.findAll();
     }
 
     public Optional<JournalEntry> getJournalById(ObjectId journalId) {
@@ -50,23 +48,41 @@ public class JournalEntryService {
         }*/
         //lambda is a short form for above loop that checks if the journalId of the current
         // JournalEntry (represented by x) is equal to the journalId passed to the method.
-        user.getJournalEntries().removeIf(x -> x.getId().equals(journalId));
-        userService.saveUser(user);
-        journalEntryRepository.deleteById(journalId);
+        user.getJournalEntries().removeIf(x -> x.getId().equals(journalId));// delete entry from the user node
+        userService.saveUser(user); // save the updated user with the entry deleted
+        journalEntryRepository.deleteById(journalId); //delete the same journal in the journal db also.
     }
 
     //for an entry with the given Id, Updating details.
-    public JournalEntry updateJournalForId(ObjectId journalId, JournalEntry newJournalEntry) throws Exception {
-        JournalEntry existingEntry = getJournalById(journalId).orElse(null);
+    public JournalEntry updateJournalForId(String userName, ObjectId journalId, JournalEntry newJournalEntry) throws Exception {
+        JournalEntry existingEntry = getJournalById(userName, journalId);
+        //JournalEntry existingEntry = getJournalById(journalId).orElse(null);
         if (existingEntry != null) {
             existingEntry.setContent((newJournalEntry.getContent() != null && !newJournalEntry.getContent().isEmpty())?
                     newJournalEntry.getContent(): existingEntry.getContent());
             existingEntry.setTitle((newJournalEntry.getTitle() != null && !newJournalEntry.getTitle().isEmpty()?
                     newJournalEntry.getTitle() : existingEntry.getTitle()));
+            journalEntryRepository.save(existingEntry);
+            return existingEntry;
         } else {
             throw new Exception("Id dose not exist");
         }
-        journalEntryRepository.save(existingEntry);
-        return existingEntry;
+    }
+
+    public JournalEntry getJournalById(String userName, ObjectId journalId) {
+        User user = userService.findByUserName(userName);
+        if (user != null) {
+            return user.getJournalEntries().stream()
+                    .filter(x -> x.getId().equals(journalId))
+                    .findFirst() // Return an Optional<JournalEntry>
+                    .orElse(null); // If no entry found, return null
+            /*List<JournalEntry> journalEntries = new ArrayList<>();
+        for (JournalEntry entry : user.getJournalEntries()) {
+            if (entry.getId().equals(journalId)) {
+                return entry; // Return the first matching entry
+            }
+        }*///traditional approach to iterate over the list
+        }
+        return null;
     }
 }
