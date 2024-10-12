@@ -23,13 +23,18 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
-    public void saveEntry(JournalEntry journalEntry, String userName) {
-        User user = userService.findByUserName(userName);
-        System.out.println("found user: "+userName);
-        journalEntry.setLocalDateTime(LocalDateTime.now());
-        JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
-        user.getJournalEntries().add(savedEntry);
-        userService.saveUser(user);
+    public boolean saveEntry(JournalEntry journalEntry, String userName) {
+        try {
+            User user = userService.findByUserName(userName);
+            System.out.println("found user: "+userName);
+            journalEntry.setLocalDateTime(LocalDateTime.now());
+            JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
+            user.getJournalEntries().add(savedEntry);
+            userService.saveUser(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public Optional<JournalEntry> getJournalById(ObjectId journalId) {

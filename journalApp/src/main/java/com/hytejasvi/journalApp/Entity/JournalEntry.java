@@ -1,9 +1,6 @@
 package com.hytejasvi.journalApp.Entity;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,6 +14,8 @@ import java.time.LocalDateTime;
 //@Setter
 @Data //--> this is equal to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode.
 @NoArgsConstructor //Generates a no-args constructor.
+@AllArgsConstructor
+@Builder
 public class JournalEntry {
 
     @Id // this marks the variable as primary key
