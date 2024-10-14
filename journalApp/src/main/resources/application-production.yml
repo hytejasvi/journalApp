@@ -6,11 +6,11 @@ spring:
       auto-index-creation : true
 
 
-logging:
-  level:
-    com:
-      hytejasvi:
-        journalApp: error # by setting this we limit the logs to only logger.error in production profile
+#logging:
+#  level:
+#    com:
+#      hytejasvi:
+#        journalApp: error # by setting this we limit the logs to only logger.error in production profile
 
 #Logging levels: trace--> Debug--> Info--> Warn --> error
 #by default, info and below are enabled, we need to particularly enable the above levels if needed

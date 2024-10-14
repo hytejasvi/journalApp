@@ -5,11 +5,11 @@ spring:
       database: journaldb
       auto-index-creation : true
 
-logging:
-  level:
-    com:
-      hytejasvi:
-        journalApp: DEBUG
+#logging:
+#  level:
+#    com:
+#      hytejasvi:
+#        journalApp: DEBUG
 
 #Logging levels: trace--> Debug--> Info--> Warn --> error
 #by default, info and below are enabled, we need to particularly enable the above levels if needed
