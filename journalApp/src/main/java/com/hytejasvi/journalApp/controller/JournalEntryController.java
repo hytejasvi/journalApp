@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
@@ -26,7 +25,7 @@ public class JournalEntryController {
     @Autowired
     UserService userService;
 
-    //this will be resolved to url:port/journal}
+    //this will be resolved to url:port/journal/journal
     @GetMapping
     public ResponseEntity<List<JournalEntry>> getAllJournalEntriesOfUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -42,6 +41,7 @@ public class JournalEntryController {
         }
     }
 
+    //this will be resolved to url:port/journal/journal
     @PostMapping
     public ResponseEntity<JournalEntry> creatEntry(@RequestBody JournalEntry myEntry) {
         try {
@@ -57,9 +57,7 @@ public class JournalEntryController {
     @GetMapping("/id/{journalId}")
     public ResponseEntity<JournalEntry> getEntry(@PathVariable ObjectId journalId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("inside get: "+authentication);
         String username = authentication.getName();
-        System.out.println("username: "+username);
         JournalEntry journalEntries = journalEntryService.getJournalById(username, journalId);
         if (journalEntries != null) {
             return new ResponseEntity<>(journalEntries, HttpStatus.OK);

@@ -3,6 +3,7 @@ package com.hytejasvi.journalApp.service;
 import com.hytejasvi.journalApp.Entity.JournalEntry;
 import com.hytejasvi.journalApp.Entity.User;
 import com.hytejasvi.journalApp.repository.JournalEntryRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component //Informing Spring, to scan this and keep it's object ready
+@Slf4j
 public class JournalEntryService {
 
     @Autowired //for the reference of a class below, spring will automatically instantiate the object.
@@ -23,7 +25,7 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
-    public boolean saveEntry(JournalEntry journalEntry, String userName) {
+    public void saveEntry(JournalEntry journalEntry, String userName) {
         try {
             User user = userService.findByUserName(userName);
             System.out.println("found user: "+userName);
@@ -31,9 +33,8 @@ public class JournalEntryService {
             JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
             user.getJournalEntries().add(savedEntry);
             userService.saveUser(user);
-            return true;
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -70,6 +71,7 @@ public class JournalEntryService {
             journalEntryRepository.save(existingEntry);
             return existingEntry;
         } else {
+            log.error("unable to update journal Entry for username: {} and journalId: {}", userName, journalId);
             throw new Exception("Id dose not exist");
         }
     }
