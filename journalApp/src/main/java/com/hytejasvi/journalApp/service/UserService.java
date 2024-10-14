@@ -1,10 +1,10 @@
 package com.hytejasvi.journalApp.service;
 
 import com.hytejasvi.journalApp.Dto.UserDto;
-import com.hytejasvi.journalApp.Entity.JournalEntry;
 import com.hytejasvi.journalApp.Entity.User;
 import com.hytejasvi.journalApp.repository.UserRepository;
-import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,18 +16,27 @@ import java.util.List;
 @Service
 public class UserService {
 
+    //initializing the logger, and making it final and static so that it will remain same for all instances of this class.
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     private UserRepository userRepository;
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public void createUser(User user) {
-        System.out.println("Entering createUser method");
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("USER"));
-        System.out.println("User before saving: " + user.toString());
-        userRepository.save(user);
-        System.out.println("User saved successfully");
+    public boolean createUser(User user) {
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(Arrays.asList("USER"));
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            //by default error, info and warning are enabled .
+            logger.info("info for error occurred for : {} -> {}" , user.getUserName(),e.getLocalizedMessage());
+            logger.error("Error occurred for : {} -> {}" , user.getUserName(),e.getMessage());
+            logger.warn("warning for error occurred for : {}" , user.getUserName(),e);
+            return false;
+        }
     }
 
     public void saveUser(User user) {
