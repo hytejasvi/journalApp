@@ -4,3 +4,14 @@ spring:
       uri: mongodb+srv://hytejasvi:D06ufNxF3kKf17sj@cluster0.rdme7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       database: journaldb
       auto-index-creation : true
+
+
+logging:
+  level:
+    com:
+      hytejasvi:
+        journalApp: error # by setting this we limit the logs to only logger.error in production profile
+
+#Logging levels: trace--> Debug--> Info--> Warn --> error
+#by default, info and below are enabled, we need to particularly enable the above levels if needed
+# if we set logging level as debug, then debug and it's below levels are enabled / allowed.

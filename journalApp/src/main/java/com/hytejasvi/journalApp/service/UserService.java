@@ -35,6 +35,10 @@ public class UserService {
             logger.info("info for error occurred for : {} -> {}" , user.getUserName(),e.getLocalizedMessage());
             logger.error("Error occurred for : {} -> {}" , user.getUserName(),e.getMessage());
             logger.warn("warning for error occurred for : {}" , user.getUserName(),e);
+            //logger.debug will start printing once we enable it in our resources
+            logger.debug("debug for error occurred for : {} -> {}" , user.getUserName(),e.getLocalizedMessage());
+            //logger.trace will start printing once we enable it in our resources
+            logger.trace("trace for error occurred for : {} -> {}" , user.getUserName(),e.getLocalizedMessage());
             return false;
         }
     }
