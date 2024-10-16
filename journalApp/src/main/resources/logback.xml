@@ -11,9 +11,7 @@
     </appender>
 
     <appender name = "myFileAppender" class = "ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>
-            journalApp.log <!--path can be given here to tell where the log file be generated-->
-        </file>
+        <file>C:/Users/hytej/Desktop/Projects/journalApp/Log-Files/journalApp.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--of the below-mentioned rolling Policy, which every policy is hit first that will be executed-->
             <FileNamePattern> journalApp-%d{yy-MM-dd_HH-mm}.%i.log</FileNamePattern>
