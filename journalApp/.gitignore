@@ -12,6 +12,13 @@ target/
 .settings
 .springBeans
 .sts4-cache
+.log
+
+# Ignore all .log files globally
+*.log
+
+# Ignore logs specifically in Log-Files/ directory
+Log-Files/*.log
 
 ### IntelliJ IDEA ###
 .idea
