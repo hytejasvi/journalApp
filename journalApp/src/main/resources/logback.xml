@@ -1,35 +1,34 @@
-<configuration >
-    <!--appender is to tell where to print the logs
-    myConsoleAppender : will be called to print logs on console
-    myFileAppender : will be called to print logs to a file-->
-    <appender name = "myConsoleAppender" class = "ch.qos.logback.core.ConsoleAppender">
+<configuration>
+    <!-- appender for console logging -->
+    <appender name="myConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>
-                %d{HH:mm:ss:SSS} [%thread] %-5level %logger{36} -%msg%n <!--this is the pattern in which the logs are printed -->
-            </pattern>
+            <pattern>%d{HH:mm:ss:SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <appender name = "myFileAppender" class = "ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- appender for file logging -->
+    <appender name="myFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- specify the log file path to store logs in the desired folder -->
         <file>C:/Users/hytej/Desktop/Projects/journalApp/Log-Files/journalApp.log</file>
+
+        <!-- rolling policy for size and time-based rolling -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!--of the below-mentioned rolling Policy, which every policy is hit first that will be executed-->
-            <FileNamePattern> journalApp-%d{yy-MM-dd_HH-mm}.%i.log</FileNamePattern>
-            <!-- the above line tells the jvm to rollover or create a new file every minute. the latest logs
-            will always be stored in our file name as given in the file attribute, and the older logs will be roled over-->
-            <maxFileSize>10MB</maxFileSize><!-- if file size reaches 10MB, then it will create a new file-->
-            <maxHistory>10</maxHistory> <!-- Maximum 10 files will be created, and then the first generated file
-            will be overwritten-->
+            <!-- logs will be rotated with a timestamp and index in the filename -->
+            <FileNamePattern>C:/Users/hytej/Desktop/Projects/journalApp/Log-Files/journalApp-%d{yy-MM-dd_HH-mm}.%i.log</FileNamePattern>
+            <!-- file size threshold for rolling -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- keep the last 10 log files -->
+            <maxHistory>10</maxHistory>
         </rollingPolicy>
+
         <encoder>
-            <pattern>
-                %d{yy-MM-dd HH:mm:ss:SSS} [%thread] %-5level %logger{36} -%msg%n <!--this is the pattern in which the logs are printed -->
-            </pattern>
+            <pattern>%d{yy-MM-dd HH:mm:ss:SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <root level="INFO"><!--Meaning, we will log till INFO level from the root level-->
-        <appender-ref ref = "myConsoleAppender"/>
-        <appender-ref ref = "myFileAppender"/>
+    <!-- root logger configuration -->
+    <root level="INFO">
+        <appender-ref ref="myConsoleAppender"/>
+        <appender-ref ref="myFileAppender"/>
     </root>
 </configuration>
