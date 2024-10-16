@@ -1,7 +1,9 @@
 package com.hytejasvi.journalApp.controller;
 
 import com.hytejasvi.journalApp.Dto.UserDto;
+import com.hytejasvi.journalApp.api.response.WeatherResponse;
 import com.hytejasvi.journalApp.service.UserService;
+import com.hytejasvi.journalApp.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WeatherService weatherService;
 
     @PutMapping()
     public ResponseEntity<String> updateUser(@RequestBody UserDto userDto) {
@@ -39,5 +44,18 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> greetings() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        WeatherResponse weatherResponse = weatherService.getWeather("Bangalore");
+        String msg = "";
+        if (weatherResponse != null) {
+            System.out.println("getFeelsLike: "+weatherResponse.getCurrent().getFeelsLike());
+            System.out.println();
+            msg = " Weather at Bangalore feels like: "+ weatherResponse.getCurrent().getFeelsLike();
+        }
+        return new ResponseEntity<>("Hi "+ authentication.getName() + msg, HttpStatus.OK);
     }
 }
