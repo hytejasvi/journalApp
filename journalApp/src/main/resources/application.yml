@@ -8,3 +8,7 @@ server:
   port: 8080
   servlet:
     context-path: /journal #our application will have to start with this followed by API signature
+
+weather:
+  api:
+    key: 0797a6795d6139953589ad16456a2a0d

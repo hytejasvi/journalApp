@@ -2,6 +2,7 @@ package com.hytejasvi.journalApp.service;
 
 import com.hytejasvi.journalApp.api.response.WeatherResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,12 @@ public class WeatherService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String API_KEY = "0797a6795d6139953589ad16456a2a0d";
+    @Value("${weather.api.key}")
+    private String API_KEY;
+    /*we remove the fina as we are not initializing it while declaring
+    * we removed the static as during the bean creation the class level variables are not disturbed much and because of which
+         the value might not reflect correctly */
+    
     private static final String API = "http://api.weatherstack.com/current?access_key=API_KEY&query=CITY";
 
     public WeatherResponse getWeather(String city) {
