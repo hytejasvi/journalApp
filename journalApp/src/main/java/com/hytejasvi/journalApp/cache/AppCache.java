@@ -26,13 +26,14 @@ public class AppCache {
         WEATHER_API;
     }
 
-    public Map<String, String> App_Cache = new HashMap<>();
+    public Map<String, String> App_Cache;
 
     @Autowired
     ConfigJournalAppRepository configJournalAppRepository;
 
     @PostConstruct
     public void init() {
+        App_Cache = new HashMap<>();
         List<ConfigJournalAppEntity> all = configJournalAppRepository.findAll();
         for(ConfigJournalAppEntity configJournalAppEntity : all) {
             App_Cache.put(configJournalAppEntity.getKey(), configJournalAppEntity.getValue());
