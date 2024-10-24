@@ -3,6 +3,7 @@ package com.hytejasvi.journalApp.cache;
 import com.hytejasvi.journalApp.Entity.ConfigJournalAppEntity;
 import com.hytejasvi.journalApp.repository.ConfigJournalAppRepository;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ import java.util.Map;
  * we can just access AppCache.App_Cache to retrieve the cached data.
  */
 @Component
+@Slf4j
 public class AppCache {
 
     public enum keys {
@@ -38,5 +40,6 @@ public class AppCache {
         for(ConfigJournalAppEntity configJournalAppEntity : all) {
             App_Cache.put(configJournalAppEntity.getKey(), configJournalAppEntity.getValue());
         }
+        log.info("Running AppCache init finished");
     }
 }

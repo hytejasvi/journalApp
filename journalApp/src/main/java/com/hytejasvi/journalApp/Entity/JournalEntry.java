@@ -1,5 +1,6 @@
 package com.hytejasvi.journalApp.Entity;
 
+import com.hytejasvi.journalApp.enums.Sentiment;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -24,6 +25,7 @@ public class JournalEntry {
     private String title;
     private String content;
     private LocalDateTime localDateTime;
+    private Sentiment sentiment;
 
 
     /*public LocalDateTime getLocalDateTime() {
