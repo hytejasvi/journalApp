@@ -13,7 +13,7 @@ public class AppCacheScheduler {
     private AppCache appCache;
 
 
-    @Scheduled(cron = "*/5 * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void clearAppCache() {
         appCache.init();
     }
