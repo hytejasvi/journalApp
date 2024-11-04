@@ -1,6 +1,8 @@
 package com.hytejasvi.journalApp.config;
 
+import com.hytejasvi.journalApp.filter.JwtFilter;
 import com.hytejasvi.journalApp.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -18,7 +21,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SpringSecurity {
 
+    @Autowired
     private final UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     public SpringSecurity(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -34,7 +41,8 @@ public class SpringSecurity {
                         .requestMatchers("/journal/**","/user/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN") //role based authorization
                         .anyRequest().permitAll())
-                .httpBasic(withDefaults());//tells spring application that basic auth will be used for authorization
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                //.httpBasic(withDefaults());//tells spring application that basic auth will be used for authorization
         return http.build();  // Build the SecurityFilterChain
     }
 
