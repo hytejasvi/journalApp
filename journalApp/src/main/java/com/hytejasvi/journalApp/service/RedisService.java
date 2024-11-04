@@ -20,8 +20,12 @@ public class RedisService {
         try {
             log.info("Inside RedisService get method");
             Object o = redisTemplate.opsForValue().get(key);
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(o.toString(), entityClass);
+            if (o != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(o.toString(), entityClass);
+            }
+            log.info("No value currently present in redis, hence returning null");
+            return null;
         } catch (Exception e) {
             log.error("Exception ", e);
             return null;
@@ -34,6 +38,7 @@ public class RedisService {
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonValue = objectMapper.writeValueAsString(o);
             redisTemplate.opsForValue().set(key, jsonValue, ttl, TimeUnit.SECONDS);
+            log.info("Setting value into redis successful");
         } catch (Exception e) {
             log.error("Exception ", e);
         }
