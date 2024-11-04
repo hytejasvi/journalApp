@@ -30,7 +30,6 @@ public class JournalEntryController {
     public ResponseEntity<List<JournalEntry>> getAllJournalEntriesOfUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-        System.out.println("inside getAllJournalEntriesOfUser");
         User user = userService.findByUserName(userName);
         System.out.println(": "+user);
         List<JournalEntry> allEntries = user.getJournalEntries();
