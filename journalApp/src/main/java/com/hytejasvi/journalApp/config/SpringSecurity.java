@@ -38,6 +38,9 @@ public class SpringSecurity {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Stateless session management
                 ).csrf(csrf -> csrf.disable()) // Updated way to disable CSRF
                 .authorizeHttpRequests(auth -> auth  // Replacing authorizeRequests
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                        //.requestMatchers("/v3/api-docs/**").permitAll() // Allow access to OpenAPI docs
+                        //.requestMatchers("/swagger-ui/**").permitAll() // Allow access to Swagger UI
                         .requestMatchers("/journal/**","/user/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN") //role based authorization
                         .anyRequest().permitAll())
